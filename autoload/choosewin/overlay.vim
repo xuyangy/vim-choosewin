@@ -71,7 +71,7 @@ function! s:undoclear() "{{{1
   try
     let undolevels_org = &undolevels
     let &undolevels = -1
-    noautocmd execute "normal! a \<BS>\<Esc>"
+    noautocmd execute "normal! i \<Space>\<BS>\<Esc>"
     let &undolevels = undolevels_org
   catch
     let &undolevels = -1
