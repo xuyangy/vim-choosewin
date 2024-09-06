@@ -174,6 +174,7 @@ function! s:cw.label_show() "{{{1
   " execute 'Gitsigns detach_all'
   lua vim.diagnostic.disable()
   execute 'IBLDisable'
+  execute 'Gitsigns toggle_signs'
   if self.conf['hook_enable'] && index(self.conf['hook_bypass'], 'filter_window' ) is -1
     let wins_new = self.call_hook('filter_window', copy(self.wins.get()))
     call self.wins.set(wins_new)
@@ -209,6 +210,7 @@ function! s:cw.label_clear() "{{{1
   endif
   lua vim.diagnostic.enable()
   execute 'IBLEnable'
+  execute 'Gitsigns toggle_signs'
   " execute 'Gitsigns attach'
 endfunction
 
