@@ -28,6 +28,7 @@ endfunction
 function! s:wins.set(wins) "{{{1
   " Filter out non-existing window before store.
   let self._data = filter(a:wins, 'index(s:win_all(), v:val) isnot -1')
+  let self._data = filter(self._data, 'index(["notify", "fidget", "vimshell", "nerdtree"],  getwinvar(v:val, "&filetype")) == -1' )
   return self
 endfunction
 "}}}
@@ -113,8 +114,9 @@ endfunction
 function! s:cw.choose() "{{{1
   while 1
     call self.label_show()
-    let prompt = (self.conf['swap'] ? '[swap] ' : '') . 'choose > '
-    let char = s:_.read_char(prompt)
+    " let prompt = (self.conf['swap'] ? '[swap] ' : '') . 'choose > '
+    " let char = s:_.read_char(prompt)
+    let char = s:_.read_char('')
 
     call self.label_clear()
 
@@ -150,7 +152,7 @@ function! s:cw.finish() "{{{1
   echo ''
   redraw
   if self.conf['blink_on_land']
-    call s:_.blink(2, "ChooseWinLand", '\k*\%#\k*')
+    call s:_.blink(3, "ChooseWinLand", '\k*\%#\k*')
   endif
   if !empty(self.exception)
     call s:_.message(self.exception)
@@ -169,6 +171,9 @@ endfunction
 
 " Label:
 function! s:cw.label_show() "{{{1
+  " execute 'Gitsigns detach_all'
+  lua vim.diagnostic.disable()
+  execute 'IBLDisable'
   if self.conf['hook_enable'] && index(self.conf['hook_bypass'], 'filter_window' ) is -1
     let wins_new = self.call_hook('filter_window', copy(self.wins.get()))
     call self.wins.set(wins_new)
@@ -202,6 +207,9 @@ function! s:cw.label_clear() "{{{1
   if self.conf['overlay_enable']
     call self.overlay.restore()
   endif
+  lua vim.diagnostic.enable()
+  execute 'IBLEnable'
+  " execute 'Gitsigns attach'
 endfunction
 
 function! s:cw.prepare_label(win) "{{{1
